@@ -1,7 +1,7 @@
 PROJECT_NAME := image-utils
 LATEST := $(PROJECT_NAME):latest
 
-all: docker lint test
+all: docker-dev lint
 
 docker:
 	docker build -t $(LATEST) .
@@ -12,12 +12,10 @@ docker-dev:
 lint:
 	./run_pylint.sh $(LATEST)
 
-test: pytest functest
-
 functest :
 	docker run -it $(LATEST)
 
 pytest:
 	./run_pytest.sh $(LATEST)
 
-.PHONY: docker lint pytest functest
+.PHONY: docker lint pytest functest test

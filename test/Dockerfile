@@ -11,11 +11,5 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing && \
 ADD requirements.txt .
 RUN pip3 install -r requirements.txt && \
     rm requirements.txt
-   
-ADD . .
 
-ENV PYTHONPATH=/src:$PYTHONPATH
-
-#ADD docker-entrypoint.sh .
-
-#ENTRYPOINT ["./docker-entrypoint.sh"]
+WORKDIR /workspace
