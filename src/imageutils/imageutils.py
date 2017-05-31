@@ -57,7 +57,7 @@ def img_to_array(img, data_format='channels_last', data_type=np.float32):
     return img_data
 
 
-def resize_img(img, target_size):
+def resize_img(img, target_size, resize_method=Image.ANTIALIAS):
     """Return a resized PIL image."""
     if target_size is None \
        or not isinstance(target_size, (list, tuple, np.ndarray)) \
@@ -66,7 +66,7 @@ def resize_img(img, target_size):
         return None
     hw_tuple = (target_size[1], target_size[0])
     if img.size != hw_tuple:
-        img = img.resize(hw_tuple, Image.ANTIALIAS)
+        img = img.resize(hw_tuple, resize_method)
     return img
 
 

@@ -12,6 +12,8 @@ assert(img_name == md5)
 
 assert(img.size == imageutils.load_img_from_md5(md5).size)
 
+assert(imageutils.resize_img(img, [15, 15]).size == (15, 15))
+
 assert(imageutils.load_img('fake_img_path') is None)
 
 rotated_img = imageutils.load_img('rotated_images.jpg')
