@@ -4,10 +4,30 @@ import logging
 import hashlib
 import io
 import urllib.request
-from PIL import Image
+from PIL import Image, ExifTags
 import numpy as np
 
 LOGGER = logging.getLogger('imageutils')
+
+def rotate_img_with_exif(img):
+    try:
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation]=='Orientation':
+                break
+        exif=dict(img._getexif().items())
+
+        if exif[orientation] == 3:
+            img=img.rotate(180, expand=True)
+        elif exif[orientation] == 6:
+            img=img.rotate(270, expand=True)
+        elif exif[orientation] == 8:
+            img=img.rotate(90, expand=True)
+    except (AttributeError, KeyError, IndexError):
+        # cases: image don't have getexif
+        pass
+
+    return img
+    
 
 def img_to_array(img, data_format='channels_last', data_type=np.float32):
     """Converts a PIL Image instance to a Numpy array."""
@@ -71,6 +91,7 @@ def load_img(path, target_size=None):
         return None
         #raise ValueError('Directory not found: ', path)
     img = Image.open(path)
+    img = rotate_img_with_exif(img)
     if img.mode != 'RGB':
         img = img.convert('RGB')
     if target_size:
@@ -93,6 +114,7 @@ def load_img_from_md5(image_md5, url='https://octopus.heuritech.com/get?md5=', t
         md5_url = url + image_md5
         file_data = io.BytesIO(urllib.request.urlopen(md5_url).read())
         img = Image.open(file_data)
+        img = rotate_img_with_exif(img)
         if target_size:
             img = resize_img(img, target_size=target_size)
     except ValueError as error:
