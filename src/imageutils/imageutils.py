@@ -10,24 +10,26 @@ import numpy as np
 LOGGER = logging.getLogger('imageutils')
 
 def rotate_img_with_exif(img):
+    """Returns a rotated image to take into account exif orientation info"""
     try:
-        for orientation in ExifTags.TAGS.keys():
-            if ExifTags.TAGS[orientation]=='Orientation':
+        orientation = None
+        for orientation, exif_tag in ExifTags.TAGS.items():
+            if exif_tag == 'Orientation':
                 break
-        exif=dict(img._getexif().items())
+        exif = dict(img._getexif().items())
 
         if exif[orientation] == 3:
-            img=img.rotate(180, expand=True)
+            img = img.rotate(180, expand=True)
         elif exif[orientation] == 6:
-            img=img.rotate(270, expand=True)
+            img = img.rotate(270, expand=True)
         elif exif[orientation] == 8:
-            img=img.rotate(90, expand=True)
+            img = img.rotate(90, expand=True)
     except (AttributeError, KeyError, IndexError):
         # cases: image don't have getexif
         pass
 
     return img
-    
+
 
 def img_to_array(img, data_format='channels_last', data_type=np.float32):
     """Converts a PIL Image instance to a Numpy array."""
