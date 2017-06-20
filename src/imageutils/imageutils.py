@@ -56,8 +56,16 @@ def img_to_array(img, data_format='channels_last', data_type=np.float32):
         #raise ValueError('Unsupported image shape: ', img_data.shape)
     return img_data
 
+def resize_and_keep_img_ratio(img, color="white"):
+    size = img.size
 
-def resize_img(img, target_size, resize_method=Image.ANTIALIAS):
+    new_size = (max(size), max(size))
+    new_img = Image.new("RGB", new_size, color=color)
+    new_img.paste(img, ((new_size[0]-size[0])//2,
+                        (new_size[1]-size[1])//2))
+    return new_img
+
+def resize_img(img, target_size, use_keep_img_ratio=False, color="white", resize_method=Image.ANTIALIAS):
     """Return a resized PIL image."""
     if target_size is None \
        or not isinstance(target_size, (list, tuple, np.ndarray)) \
@@ -65,6 +73,8 @@ def resize_img(img, target_size, resize_method=Image.ANTIALIAS):
         LOGGER.warning('Unexpected size dimension for resize_img function: ' + str(target_size))
         return None
     hw_tuple = (target_size[1], target_size[0])
+    if use_keep_img_ratio:
+        img = resize_and_keep_img_ratio(img, color=color)
     if img.size != hw_tuple:
         img = img.resize(hw_tuple, resize_method)
     return img
