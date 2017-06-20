@@ -91,7 +91,7 @@ def crop_img(img, target_crop):
     return img
 
 
-def load_img(path, target_size=None):
+def load_img(path, target_size=None, use_keep_img_ratio=False, color="white"):
     """Loads an image into PIL format."""
     if Image is None:
         LOGGER.warning('Could not import PIL.Image. The use of `load_img` requires PIL.')
@@ -107,7 +107,10 @@ def load_img(path, target_size=None):
     if img.mode != 'RGB':
         img = img.convert('RGB')
     if target_size:
-        img = resize_img(img, target_size=target_size)
+        img = resize_img(img, 
+                         target_size=target_size, 
+                         use_keep_img_ratio=use_keep_img_ratio, 
+                         color=color)
     return img
 
 
