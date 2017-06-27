@@ -8,7 +8,7 @@ from PIL import Image, ExifTags
 import numpy as np
 
 LOGGER = logging.getLogger('imageutils')
-Image.logger.setLevel(imageutils.LOGGER.level)
+Image.logger.setLevel(LOGGER.level)
 
 def rotate_img_with_exif(img):
     """Returns a rotated image to take into account exif orientation info"""
