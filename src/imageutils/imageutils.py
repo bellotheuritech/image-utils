@@ -13,7 +13,6 @@ import math
 LOGGER = logging.getLogger('imageutils')
 Image.logger.setLevel(LOGGER.level)
 
-print("local imageutils")
 def rotate_img_with_exif(img):
     """Returns a rotated image to take into account exif orientation info"""
     try:
