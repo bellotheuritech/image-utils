@@ -3,13 +3,17 @@ import os
 import logging
 import hashlib
 import io
+
 import urllib.request
 from PIL import Image, ExifTags
 import numpy as np
+import matplotlib.pyplot as plt
+import math
 
 LOGGER = logging.getLogger('imageutils')
 Image.logger.setLevel(LOGGER.level)
 
+print("local imageutils")
 def rotate_img_with_exif(img):
     """Returns a rotated image to take into account exif orientation info"""
     try:
@@ -149,3 +153,30 @@ def get_md5_from_imagepath(image_path):
         for chunk in iter(lambda: file_data.read(4096), b""):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
+
+def plot_image_path(image_path, log_image_path=False):
+    img = load_img(image_path)
+    np_img = img_to_array(img)
+    if log_image_path:
+        plt.title(image_path)
+    plt.imshow(img)
+    plt.axis('off')
+    plt.show()
+    
+def plot_list_image_path(list_image_path, log_image_path=False):
+    i=1
+    nb_img = len(list_image_path)
+    plt.figure(figsize=(10,2 * nb_img))
+    for image_path in list_image_path:
+        if not os.path.isfile(image_path):
+            continue
+        img = load_img(image_path)
+        np_img = img_to_array(img)
+        plt.subplot(math.ceil(nb_img/ 3) + 1,3,i)
+        i+=1
+        if log_image_path:
+            plt.title(image_path)
+        plt.imshow(img)
+        plt.axis('off')
+    plt.show()
+    
