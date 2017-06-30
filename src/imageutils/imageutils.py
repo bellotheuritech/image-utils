@@ -5,13 +5,12 @@ import hashlib
 import io
 
 import urllib.request
-from PIL import Image, ExifTags
+from PIL import Image, ExifTags, PngImagePlugin
 import numpy as np
-import matplotlib.pyplot as plt
-import math
 
 LOGGER = logging.getLogger('imageutils')
 Image.logger.setLevel(LOGGER.level)
+PngImagePlugin.logger.setLevel(LOGGER.level)
 
 def rotate_img_with_exif(img):
     """Returns a rotated image to take into account exif orientation info"""
@@ -61,6 +60,7 @@ def img_to_array(img, data_format='channels_last', data_type=np.float32):
     return img_data
 
 def resize_and_keep_img_ratio(img, color="white"):
+    """resize and keep image ratio"""
     size = img.size
 
     new_size = (max(size), max(size))
@@ -69,7 +69,11 @@ def resize_and_keep_img_ratio(img, color="white"):
                         (new_size[1]-size[1])//2))
     return new_img
 
-def resize_img(img, target_size, use_keep_img_ratio=False, color="white", resize_method=Image.ANTIALIAS):
+def resize_img(img,
+               target_size,
+               use_keep_img_ratio=False,
+               color="white",
+               resize_method=Image.ANTIALIAS):
     """Return a resized PIL image."""
     if target_size is None \
        or not isinstance(target_size, (list, tuple, np.ndarray)) \
@@ -111,9 +115,9 @@ def load_img(path, target_size=None, use_keep_img_ratio=False, color="white"):
     if img.mode != 'RGB':
         img = img.convert('RGB')
     if target_size:
-        img = resize_img(img, 
-                         target_size=target_size, 
-                         use_keep_img_ratio=use_keep_img_ratio, 
+        img = resize_img(img,
+                         target_size=target_size,
+                         use_keep_img_ratio=use_keep_img_ratio,
                          color=color)
     return img
 
@@ -152,30 +156,3 @@ def get_md5_from_imagepath(image_path):
         for chunk in iter(lambda: file_data.read(4096), b""):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
-
-def plot_image_path(image_path, log_image_path=False):
-    img = load_img(image_path)
-    np_img = img_to_array(img)
-    if log_image_path:
-        plt.title(image_path)
-    plt.imshow(img)
-    plt.axis('off')
-    plt.show()
-    
-def plot_list_image_path(list_image_path, log_image_path=False):
-    i=1
-    nb_img = len(list_image_path)
-    plt.figure(figsize=(10,2 * nb_img))
-    for image_path in list_image_path:
-        if not os.path.isfile(image_path):
-            continue
-        img = load_img(image_path)
-        np_img = img_to_array(img)
-        plt.subplot(math.ceil(nb_img/ 3) + 1,3,i)
-        i+=1
-        if log_image_path:
-            plt.title(image_path)
-        plt.imshow(img)
-        plt.axis('off')
-    plt.show()
-    
