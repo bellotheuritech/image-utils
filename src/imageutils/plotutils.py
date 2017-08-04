@@ -31,3 +31,7 @@ def plot_list_image_path(list_image_path, log_image_path=False):
         plt.imshow(img)
         plt.axis('off')
     plt.show()
+
+def plot_numpy_img(np_img):
+    plt.imshow(data, interpolation='nearest')
+    plt.show()
