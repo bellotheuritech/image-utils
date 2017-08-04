@@ -33,5 +33,6 @@ def plot_list_image_path(list_image_path, log_image_path=False):
     plt.show()
 
 def plot_numpy_img(np_img):
-    plt.imshow(data, interpolation='nearest')
+    """plot image from numpy array"""
+    plt.imshow(np_img, interpolation='nearest')
     plt.show()
